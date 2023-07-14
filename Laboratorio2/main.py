@@ -10,19 +10,19 @@ def funciontiempo(funcion_parametro):
     def funcion_inside():
         funcion_parametro()        
         duration = time.time() - start_time
-        result = (f"Todos los nombres se leen en **{duration}** seg(s) de forma <ins>*{Tipoproceso}*<ins>")
+        result = (f"Los nombres se leen en **{duration}** seg(s) de forma <ins>*{Tipoproceso}*<ins>")
         escribeMD(result)
     return funcion_inside
 
 def escribeMD(result):
-    if (os.path.exists("resultados.md"))==False:
-        with open ("resultados.md","a+") as archivo: 
+    if (os.path.exists("Laboratorio2/resultados.md"))==False:
+        with open ("Laboratorio2/resultados.md","a+") as archivo: 
             archivo.write("# Laboratorio 1\n")
             archivo.write("## Resultados\n")
             archivo.write("+"+result+"\n")
             archivo.close
     else:
-        with open ("resultados.md","a+") as archivo:            
+        with open ("Laboratorio2/resultados.md","a+") as archivo:            
             archivo.write("+"+result+"\n")            
         archivo.close
 
