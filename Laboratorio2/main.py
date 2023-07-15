@@ -9,6 +9,7 @@ import asyncio
 
 Tipoproceso=""
 
+#Funcion decoradora para calcular el tiempo de demara
 def funciontiempo(funcion_parametro):
     start_time = time.time()
     def funcion_inside(*args):
@@ -18,11 +19,15 @@ def funciontiempo(funcion_parametro):
         escribeMD(result)
     return funcion_inside
 
+#funcion que permite escribir los resultado a un .md file
 def escribeMD(result):
     if (os.path.exists("Laboratorio2/resultados.md"))==False:
+        #se verifica si el archivo ya existe
         with open ("Laboratorio2/resultados.md","a+") as archivo: 
-            archivo.write("# Laboratorio 1\n")
-            archivo.write("## Resultados\n")
+            archivo.write("# Laboratorio 2\n ")
+            archivo.write("## Conclusion \n ")
+            archivo.write("> El uso de threads fue el que mejor resultado presento. Seguido por el multiproceso. AsyncIO no mostro mejorias al no haber multiples tareas ejecutandose.<br/>\n ")
+            archivo.write("#### Resultados\n ")            
             archivo.write("+"+result)
             archivo.close
     else:
@@ -30,69 +35,106 @@ def escribeMD(result):
             archivo.write("+"+result)            
             archivo.close
 
-#-------------Funcion Sync#-------------
 
 
+#-------------------------------------- 
+#-------------Funcion Sync-------------
+#--------------------------------------
+
+"""
+
+#Funcion Synch que obtiene los nombres del diccionario
 @funciontiempo
 def cuenta_nombres():
     global Tipoproceso
     Tipoproceso="Sync"
     for e in ids.ids:       
-        #print(api.getOneUser(e)["name"]) 
-        (api.getOneUser(e)["name"])      
+        print(api.getOneUser(e)["name"]) 
+        #(api.getOneUser(e)["name"])      
 
-cuenta_nombres()
-#-------------Funcion Threads#-------------
+#cuenta_nombres()
 
-def cuenta_nombres_thread(NameList):
+
+"""
+
+#----------------------------------------- 
+#-------------Funcion Threads-------------
+#----------------------------------------- 
+
+
+
+
+def cuenta_nombres_thread(ListID):
     global Tipoproceso
     Tipoproceso="Threads"         
-    #print(api.getOneUser(NameList)["name"]) 
-    api.getOneUser(NameList)["name"]
+    print(api.getOneUser(ListID)["name"]) 
+    #api.getOneUser(ListID)["name"]
          
 
 @funciontiempo
 def usando_thread():
+    #Mediante maps se relacionan los contenidos de la lista y la funcion mediante hilos
     with concurrent.futures.ThreadPoolExecutor() as MyExecutor:
         MyExecutor.map(cuenta_nombres_thread,ids.ids)
     
 usando_thread()
 
-#-------------Funcion Multiprocess#-------------
 
 
-def cuenta_nombres_Multi(ListaNum):           
-    #print(api.getOneUser(ListaNum)["name"]) 
-    api.getOneUser(ListaNum)["name"]    
+
+
+#----------------------------------------- 
+#-----------Funcion Multiprocess----------
+#----------------------------------------- 
+
+"""
+
+
+def cuenta_nombres_Multi(ListID):           
+    print(api.getOneUser(ListID)["name"]) 
+    #api.getOneUser(ListID)["name"]    
 
 @funciontiempo
 def crear_pool(MiLista):
     global Tipoproceso
-    Tipoproceso="Multiprocess"     
+    Tipoproceso="Multiprocess"
+    #Mediante maps se relacionan los contenidos de la lista y la funcion mediante multiprocesos     
     with multiprocessing.Pool() as pool:       
         pool.map(cuenta_nombres_Multi, MiLista)
            
 
-#if __name__ == "__main__":              
-  #      crear_pool(ids.ids)         
+if __name__ == "__main__":              
+        crear_pool(ids.ids)         
 
-     
+"""        
+
+
+#-----------------------------------------    
 #-------------Funcion AsyncIO-------------
-async def cuenta_nombres_Multi(ListaNum):           
-    print(api.getOneUser(ListaNum)["name"]) 
+#-----------------------------------------
+"""
+async def cuenta_nombres_Multi(ListaID):           
+    print(api.getOneUser(ListaID)["name"]) 
 
-@funciontiempo
+
 async def main():
-    global Tipoproceso
-    Tipoproceso="Sync"
-    print("start") 
+    start_time = time.time()      
+    
     list=[]
-    for i in ids.ids:
-        list.append(cuenta_nombres_Multi(i))  
+    for id in ids.ids:
+        list.append(cuenta_nombres_Multi(id))
     await asyncio.gather(*list)
-    print("done")              
+    duration = time.time() - start_time
 
-#asyncio.run(main())    
+    #se escriben los resultados al archivo .md
+    result = (f"Los nombres se leen en **{duration}** seg(s) de forma *AsynchIO*<br /> ")   
 
+    with open ("Laboratorio2/resultados.md","a+") as archivo:            
+            archivo.write("+"+result)            
+            archivo.close         
+
+
+asyncio.run(main())    
+"""
 
 
