@@ -4,6 +4,9 @@ import time
 import os
 import concurrent.futures
 import multiprocessing
+import asyncio
+
+
 Tipoproceso=""
 
 def funciontiempo(funcion_parametro):
@@ -74,3 +77,22 @@ def crear_pool(MiLista):
   #      crear_pool(ids.ids)         
 
      
+#-------------Funcion AsyncIO-------------
+async def cuenta_nombres_Multi(ListaNum):           
+    print(api.getOneUser(ListaNum)["name"]) 
+
+@funciontiempo
+async def main():
+    global Tipoproceso
+    Tipoproceso="Sync"
+    print("start") 
+    list=[]
+    for i in ids.ids:
+        list.append(cuenta_nombres_Multi(i))  
+    await asyncio.gather(*list)
+    print("done")              
+
+#asyncio.run(main())    
+
+
+
