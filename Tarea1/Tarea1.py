@@ -3,8 +3,8 @@ import time
 cont=True
 """
  La API escogida proviene de https://ygoprodeck.com/api-guide/ la cual proporciona una base
- de datos de diferentes estadisticas de cada carta asi como sus caracteristicas.
-  Los metodos creados permiten filtra por algunas de las subcategorias asi como ver
+ de datos de diferentes estadisticas de cada carta de Yu-Gi-Oh asi como sus caracteristicas.
+  Los metodos creados permiten filtrar por algunas de las subcategorias asi como ver
  estadisticas por carta.
   Actualmente existen 12,456 cartas, por lo que se limitó la cantidad de valores a imprimir. 
  
