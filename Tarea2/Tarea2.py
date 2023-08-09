@@ -2,7 +2,7 @@ import Tarea1 as T1
 import requests
 import pandas as pd
 import time
-
+import matplotlib.pyplot as plt
 
 cont=True
 def FilterData(filter):
@@ -27,22 +27,22 @@ def FilterData(filter):
                         MyDicct["Attribute"].append(elem["attribute"])
                 except KeyError:
                     pass  
-            PrintStats(MyDicct)
+            return MyDicct,filter
 
         except:
             print("-Incorrect Value or filter does not exists")
             print(" Returning  to main menu\n") 
             time.sleep(2) 
 
-def PrintStats(MyDicct):    
-    data=pd.DataFrame.from_dict(MyDicct)
+def PrintStats(Filter):    
+    data=pd.DataFrame.from_dict(FilterData(Filter))
     print(data)
     print("Processing request...")
     time.sleep(2)
     MaxLevel = data.loc[data["Level"].idxmax(), "Level"]
     MaxDef = data.loc[data["Def"].idxmax(), "Def"]
     MaxAttk= data.loc[data["Atk"].idxmax(), "Atk"]
-    TopLevel=data.nlargest(3,'Level')
+    TopLevel=data.nlargest(10,'Level')
     TopDef=data.nlargest(3,'Def')
     TopAtk=data.nlargest(3,'Atk')
     Mode=data['Level'].mode()[0]#Ya que retorna un objecto, agregamos [0] para extraer el valor.
@@ -56,6 +56,36 @@ def PrintStats(MyDicct):
     print("\n • The top attack cards are:\n",TopAtk)
     Next()
 
+def PrintGraph(Filter):
+    TempDicct,FilterName=(FilterData(Filter))
+    data=pd.DataFrame.from_dict(TempDicct)
+    def Level():
+        #Funcion que muestra cuantas cartas hay por nivel por categoria        
+        groupLevel = data.groupby("Level").count()
+        plt.bar(groupLevel.index, groupLevel["Name"])
+        plt.xlabel("LEVEL")
+        plt.ylabel("COUNT")
+        plt.title(f"Level per {FilterName}",weight='bold', fontsize=18)    
+        plt.show()
+
+    def AtkDef():
+
+        Sdata=data.sort_values("Atk", ascending=False)
+        newDF=Sdata[["Name","Atk","Def"]].copy().head(15)
+        
+        ax = newDF.plot.bar(x=('Name'), width=1)        
+        ax.set_xlabel('CARD NAME')
+        ax.set_ylabel('Stats')
+    #https://datavizpyr.com/how-to-annotate-bars-in-grouped-barplot-in-python/
+        #plt.xlabel("Continent", size=16)
+        #plt.ylabel("LifeExp", size=16)
+        for container in ax.containers:            
+            ax.bar_label(container,rotation=90,size=13,label_type='center')
+        ax.set_title(f"Top Stats per {FilterName}",weight='bold', fontsize=15)    
+        
+        #plt.title
+        plt.show()
+    AtkDef()    
 
 def Next():
     global cont
@@ -95,15 +125,17 @@ def Menu():
             select=input("Select an option: ")
             if select =="1":
                 T1.Gettype() 
-                FilterData("type")                           
+                PrintStats("type")                           
             elif select =="2":
                 T1.Getrace()
-                FilterData("race")                
+                PrintStats("race")                
             elif select =="3":
                 T1.GetAttribute()
-                FilterData("attribute")                
+                PrintStats("attribute")                
             elif select == "4":
                 Menu()  
 
-Menu() 
+#Menu() 
 print("\nEnd of program.\nThanks for the visit!")               
+T1.Gettype()
+PrintGraph("type")
