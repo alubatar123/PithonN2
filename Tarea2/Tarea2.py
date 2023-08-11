@@ -91,6 +91,7 @@ def PrintGraph(Filter):
         plt.show()
 
     def CardStats():
+        #Grafico de radar que permite saber que tal son los valores de la carta con max Nivel
         df = pd.DataFrame({
             'Name': [data.loc[data["Level"].idxmax(), "Name"]],
             'Level(max 12)': [(data.loc[data["Level"].idxmax(), "Level"]/12*5000)],
